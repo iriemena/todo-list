@@ -7,13 +7,13 @@ export class Filter extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      clicked: [-1],
+      clicked: 0,
     };
   }
 
   handleClick = (buttonLabel, index) => {
     this.setState({ clicked: index });
-    this.props.filter(buttonLabel);
+    this.props.filter(buttonLabel, index);
   };
 
   render() {

@@ -15,7 +15,6 @@ export default class App extends Component {
     search: "",
     filterButton: ["ALL", "ACTIVE", "COMPLETED"],
     searchResult: [],
-    filterResult: [],
   };
 
   addTodo = (title) => {
@@ -24,6 +23,7 @@ export default class App extends Component {
       title,
       completed: false,
     };
+
     this.setState({ todos: [...this.state.todos, newTodo] });
     localStorage.setItem(
       "Todo",
@@ -69,34 +69,36 @@ export default class App extends Component {
   };
 
   // Search Todo
-  // handleSearch = (searchItem) => {
-  //   this.setState({ search: searchItem });
-  //   if (this.search !== "") {
-  //     const newData = this.state.todos.filter((data) => {
-  //       return data.title.toLowerCase().includes(searchItem.toLowerCase());
-  //     });
-  //     this.setState({ searchResult: newData });
-  //   } else {
-  //     this.setState({ searchResult: this.state.todos });
-  //   }
-  // };
+  handleSearch = (searchItem) => {
+    this.setState({ search: searchItem });
+    if (this.search !== "") {
+      const newData = this.state.todos.filter((data) => {
+        return data.title.toLowerCase().includes(searchItem.toLowerCase());
+      });
+      this.setState({ searchResult: newData });
+    } else {
+      this.setState({ searchResult: this.state.todos });
+    }
+  };
 
   // Filter
-  filter = (data) => {
-    this.setState({
-      filterResult: this.state.todos.filter((todo) => {
-        if (data === "ALL") {
-          return todo.title;
-        }
-        if (data === "ACTIVE") {
-          return !todo.completed;
-        }
-        if (data === "COMPLETED") {
-          return todo.completed;
-        }
-        return todo.title;
-      }),
-    });
+  filterTodo = (data, index) => {
+    if (index === 2) {
+      const completed = this.state.todos.filter((todo) => {
+        return todo.completed;
+      });
+      console.log(completed);
+      this.setState({ todos: [...completed] });
+    } else if (index === 1) {
+      const active = this.state.todos.filter((todo) => {
+        console.log(!todo.completed);
+        return !todo.completed;
+      });
+      console.log(active);
+      this.setState({ todos: active });
+    } else {
+      this.setState({ todos: this.state.todos });
+    }
   };
 
   // Delete Todo
@@ -125,14 +127,15 @@ export default class App extends Component {
                   <AddTodo addTodo={this.addTodo} />
                   <Search
                     searchTodo={this.state.search}
-                    filter={this.filter}
+                    filter={this.filterTodo}
                     buttons={this.state.filterButton}
+                    handleSearch={this.handleSearch}
                   />
                   <Todos
                     todos={
-                      this.state.filterResult.length < 1
+                      this.state.search.length < 1
                         ? this.state.todos
-                        : this.state.filterResult
+                        : this.state.searchResult
                     }
                     markComplete={this.markComplete}
                     deleteTodo={this.deleteTodo}
